@@ -104,6 +104,7 @@ async function getCards(ext) {
 async function getTracks(ext) {
     ext = argsify(ext)
     let tracks = []
+    let list = []
     let id = ext.id
 
     let url = appConfig.site + `/detailContent?id=${id}`
@@ -113,25 +114,28 @@ async function getTracks(ext) {
     })
 
     argsify(data).list.forEach((e) => {
-        let play_url = e.vod_play_url
-        play_url.split('#').forEach((f) => {
-            tracks.push({
-                name: f.split('$')[0],
-                pan: '',
-                ext: {
-                    id: f.split('$')[1],
-                },
+        let play_from = e.vod_play_from.split('$$$')
+        let play_url = e.vod_play_url.split('$$$')
+        tracks = []
+        for (let i=0; i<play_from.length; i++) {
+            play_url[i].split('#').forEach((f) => {
+                tracks.push({
+                    name: f.split('$')[0],
+                    pan: '',
+                    ext: {
+                        id: f.split('$')[1],
+                    },
+                })
             })
-        })
+            list.push({
+                title: play_from[i],
+                tracks: tracks,
+            })
+        }
     })
 
     return jsonify({
-        list: [
-            {
-                title: 'IPTV-BJ',
-                tracks: tracks,
-            },
-        ],
+        list: list,
     })
 }
 

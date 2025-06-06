@@ -1,0 +1,10 @@
+{
+    "sites": [
+        {
+            "name": "IPTV-BJ",
+            "type": 3,
+            "api": "csp_bjlt",
+            "ext": "http://192.168.50.3/iptv/bjlt.js"
+        }
+    ]
+}

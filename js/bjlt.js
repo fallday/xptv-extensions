@@ -67,7 +67,7 @@ async function getCards(ext) {
                 vod_pic: e.vod_pic,
                 vod_remarks: e.vod_remarks,
                 ext: {
-                    id: encodeURIComponent(e.vod_id),
+                    id: e.vod_id,
                 },
             })
         })
@@ -90,7 +90,7 @@ async function getCards(ext) {
             vod_pic: e.vod_pic,
             vod_remarks: e.vod_remarks,
             ext: {
-                id: encodeURIComponent(e.vod_id),
+                id: e.vod_id,
             },
         })
     })
@@ -105,7 +105,7 @@ async function getTracks(ext) {
     let list = []
     let id = ext.id
 
-    let url = appConfig.site + `/detailContent?id=${id}`
+    let url = appConfig.site + '/detailContent?id=' + encodeURIComponent(id)
 
     const { data } = await $fetch.get(url, {
         headers: headers,

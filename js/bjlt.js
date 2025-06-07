@@ -5,12 +5,11 @@ let headers = {
 let appConfig = {
     ver: 20250605,
     title: 'IPTV-BJ',
-    site: 'http://192.168.50.3:32189',
+    site: 'https://bjlt.iptv.ytwg.xyz:31443',
 }
 
 async function getConfig() {
-    let config = appConfig
-    config.tabs = await getTabs()
+    appConfig.tabs = await getTabs()
     return jsonify(appConfig)
 }
 
@@ -68,7 +67,7 @@ async function getCards(ext) {
                 vod_pic: e.vod_pic,
                 vod_remarks: e.vod_remarks,
                 ext: {
-                    id: e.vod_id,
+                    id: encodeURIComponent(e.vod_id),
                 },
             })
         })
@@ -91,7 +90,7 @@ async function getCards(ext) {
             vod_pic: e.vod_pic,
             vod_remarks: e.vod_remarks,
             ext: {
-                id: e.vod_id,
+                id: encodeURIComponent(e.vod_id),
             },
         })
     })
@@ -103,7 +102,6 @@ async function getCards(ext) {
 
 async function getTracks(ext) {
     ext = argsify(ext)
-    let tracks = []
     let list = []
     let id = ext.id
 
@@ -116,14 +114,14 @@ async function getTracks(ext) {
     argsify(data).list.forEach((e) => {
         let play_from = e.vod_play_from.split('$$$')
         let play_url = e.vod_play_url.split('$$$')
-        tracks = []
+        let tracks = []
         for (let i=0; i<play_from.length; i++) {
             play_url[i].split('#').forEach((f) => {
                 tracks.push({
                     name: f.split('$')[0],
                     pan: '',
                     ext: {
-                        id: f.split('$')[1],
+                        id: encodeURIComponent(f.split('$')[1]),
                     },
                 })
             })

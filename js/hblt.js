@@ -4,8 +4,8 @@ let headers = {
 
 let appConfig = {
     ver: 20250605,
-    title: 'IPTV-BJ',
-    site: 'https://bjlt.iptv.ytwg.xyz:31443',
+    title: 'IPTV-HB',
+    site: 'https://hblt.iptv.ytwg.xyz:31443',
 }
 
 async function getConfig() {

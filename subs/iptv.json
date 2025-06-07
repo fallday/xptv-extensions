@@ -4,7 +4,13 @@
             "name": "IPTV-BJ",
             "type": 3,
             "api": "csp_bjlt",
-            "ext": "http://192.168.50.3/iptv/bjlt.js"
+            "ext": "https://iptv.ytwg.xyz:31443/iptv/bjlt.js"
+        },
+        {
+            "name": "IPTV-HB",
+            "type": 3,
+            "api": "csp_hblt",
+            "ext": "https://iptv.ytwg.xyz:31443/iptv/hblt.js"
         }
     ]
 }

@@ -8,15 +8,46 @@ let appConfig = {
     site: 'https://hblt.iptv.ytwg.xyz:31443',
 }
 
+let token = ''
+
 async function getConfig() {
+    await getToken()
     appConfig.tabs = await getTabs()
     return jsonify(appConfig)
 }
 
+async function getToken() {
+    if (typeof($config_str) === 'undefined') return
+
+    let ext_config = argsify($config_str)
+    let userId = ext_config.userId
+    let userPassword = ext_config.userPassword
+    let macAddr = ext_config.macAddress
+    let stdId = ext_config.stbId
+
+    let url = appConfig.site + `/getToken?userId=${userId}&userPassword=${userPassword}&macAddr=${macAddr}&stbId=${stdId}`
+
+    const { data } = await $fetch.get(
+        url,
+        {
+            headers: headers,
+        }
+    )
+
+    const result = argsify(data)
+    if (result.code === 200) {
+        token = result.msg
+    } else {
+        token = ''
+        $utils.toastInfo('帐号认证失败，请检网络及帐号信息!')
+    }
+}
+
 async function getTabs() {
+    if (!token) return
     try {
         let list = []
-        let url = appConfig.site + '/homeContent'
+        let url = appConfig.site + '/homeContent?token=' + token
 
         const { data } = await $fetch.get(
             url,
@@ -47,10 +78,11 @@ async function getTabs() {
 }
 
 async function getCards(ext) {
+    if (!token) return
     ext = argsify(ext)
     let cards = []
     let { id, page = 1 } = ext
-    let url = appConfig.site + '/homeContent'
+    let url = appConfig.site + '/homeContent?token=' + token
 
     if (id === 'home') {
         if (page >= 2) return
@@ -77,7 +109,7 @@ async function getCards(ext) {
         })
     }
 
-    url = appConfig.site + `/categoryContent?tid=${id}&pg=${page}`
+    url = appConfig.site + `/categoryContent?tid=${id}&pg=${page}&token=${token}`
 
     const { data : data2 } = await $fetch.get(url, {
         headers: headers,
@@ -101,11 +133,12 @@ async function getCards(ext) {
 }
 
 async function getTracks(ext) {
+    if (!token) return
     ext = argsify(ext)
     let list = []
     let id = ext.id
 
-    let url = appConfig.site + '/detailContent?id=' + encodeURIComponent(id)
+    let url = appConfig.site + '/detailContent?id=' + encodeURIComponent(id) + '&token=' + token
 
     const { data } = await $fetch.get(url, {
         headers: headers,
@@ -138,10 +171,11 @@ async function getTracks(ext) {
 }
 
 async function getPlayinfo(ext) {
+    if (!token) return
     ext = argsify(ext)
     let id = ext.id
 
-    let url = appConfig.site + '/playerContent?id=' + encodeURIComponent(id)
+    let url = appConfig.site + '/playerContent?id=' + encodeURIComponent(id) + '&token=' + token
 
     const { data } = await $fetch.get(url, {
         headers: headers,
@@ -152,13 +186,14 @@ async function getPlayinfo(ext) {
 }
 
 async function search(ext) {
+    if (!token) return
     ext = argsify(ext)
     let cards = []
 
     let text = encodeURIComponent(ext.text)
     let page = ext.page || 1
     if (page >= 2) return
-    let url = `${appConfig.site}/searchContent?key=${text}&pg=${page}`
+    let url = `${appConfig.site}/searchContent?key=${text}&pg=${page}&token=${token}`
 
     const { data } = await $fetch.get(url, {
         headers: headers,
